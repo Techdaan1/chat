@@ -36,7 +36,7 @@ export default class Start extends React.Component {
           </View>
           <View>
             <Button
-              color="#757083"
+              style={styles.button}
               title="Go to Chat"
               onPress={() =>
                 this.props.navigation.navigate("Chat", {
@@ -93,6 +93,10 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#FFFFFF",
     textAlign: "center",
+  },
+
+  button: {
+    color: "#757083",
   },
 
   darkGreen: {
