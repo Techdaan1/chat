@@ -34,6 +34,8 @@ export default class Chat extends React.Component {
   }
 
   render() {
+    let name = this.props.route.params.name;
+    this.props.navigation.setOptions({ title: name });
     return (
       <GiftedChat
         messages={this.state.messages}

@@ -10,9 +10,10 @@ import {
 import backgroundImg from "../assets/bg-img.png";
 
 export default class Start extends React.Component {
-  state = {
-    name: "",
-  };
+  constructor(props) {
+    super(props);
+    this.state = { name: "" };
+  }
 
   render() {
     return (
