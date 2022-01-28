@@ -24,6 +24,7 @@ export default class Chat extends React.Component {
   }
 
   componentDidMount() {
+    //Set name to name selected on start page
     let name = this.props.route.params.name;
     this.props.navigation.setOptions({ title: name });
     this.setState({
@@ -72,22 +73,31 @@ export default class Chat extends React.Component {
   }
 
   render() {
-    // Set the title of the page
+    //Set bgcolor to color selected on start page
+    let bgColor = this.props.route.params.bgColor;
     return (
       <View style={styles.container}>
-        <GiftedChat
-          renderBubble={this.renderBubble.bind(this)}
-          messages={this.state.messages}
-          onSend={(messages) => this.onSend(messages)}
-          user={{
-            _id: 1,
-            name: this.state.name,
+        <View
+          style={{
+            backgroundColor: bgColor,
+            width: "100%",
+            height: "100%",
           }}
-        />
+        >
+          <GiftedChat
+            renderBubble={this.renderBubble.bind(this)}
+            messages={this.state.messages}
+            onSend={(messages) => this.onSend(messages)}
+            user={{
+              _id: 1,
+              name: this.state.name,
+            }}
+          />
 
-        {Platform.OS === "android" ? (
-          <KeyboardAvoidingView behavior="height" />
-        ) : null}
+          {Platform.OS === "android" ? (
+            <KeyboardAvoidingView behavior="height" />
+          ) : null}
+        </View>
       </View>
     );
   }
