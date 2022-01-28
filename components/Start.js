@@ -4,7 +4,6 @@ import {
   StyleSheet,
   Text,
   View,
-  Button,
   TextInput,
   Pressable,
 } from "react-native";
