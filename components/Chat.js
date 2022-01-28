@@ -10,6 +10,9 @@ import {
   StyleSheet,
 } from "react-native";
 
+// const firebase = require("firebase");
+// require("firebase/firestore");
+
 export default class Chat extends React.Component {
   constructor() {
     super();
@@ -84,19 +87,21 @@ export default class Chat extends React.Component {
             height: "100%",
           }}
         >
-          <GiftedChat
-            renderBubble={this.renderBubble.bind(this)}
-            messages={this.state.messages}
-            onSend={(messages) => this.onSend(messages)}
-            user={{
-              _id: 1,
-              name: this.state.name,
-            }}
-          />
+          <View style={styles.giftedChat}>
+            <GiftedChat
+              renderBubble={this.renderBubble.bind(this)}
+              messages={this.state.messages}
+              onSend={(messages) => this.onSend(messages)}
+              user={{
+                _id: 1,
+                name: this.state.name,
+              }}
+            />
 
-          {Platform.OS === "android" ? (
-            <KeyboardAvoidingView behavior="height" />
-          ) : null}
+            {Platform.OS === "android" ? (
+              <KeyboardAvoidingView behavior="height" />
+            ) : null}
+          </View>
         </View>
       </View>
     );
@@ -106,5 +111,13 @@ export default class Chat extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+
+  giftedChat: {
+    flex: 1,
+    width: "88%",
+    paddingBottom: 10,
+    justifyContent: "center",
+    borderRadius: 5,
   },
 });

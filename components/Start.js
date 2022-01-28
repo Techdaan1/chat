@@ -7,6 +7,7 @@ import {
   View,
   TextInput,
   Pressable,
+  KeyboardAvoidingView,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import backgroundImg from "../assets/bg-img.png";
@@ -96,6 +97,9 @@ export default class Start extends React.Component {
               <Text style={styles.buttonText}>Go to chat</Text>
             </Pressable>
           </View>
+          {Platform.OS === "android" ? (
+            <KeyboardAvoidingView behavior="height" />
+          ) : null}
         </ImageBackground>
       </View>
     );
