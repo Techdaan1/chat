@@ -49,7 +49,7 @@ export default class Start extends React.Component {
                 style={styles.inputText}
                 onChangeText={(text) => this.setState({ name: text })}
                 value={this.state.name}
-                placeholder="Your name..."
+                placeholder="Type your name here..."
               />
             </View>
             <View style={styles.colorBox}>
@@ -126,15 +126,11 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 45,
     fontWeight: "600",
-    textAlign: "center",
-  },
-  title: {
-    color: "blue",
   },
 
   userIcon: {
     marginTop: 7,
-    marginLeft: 10,
+    marginLeft: 5,
     marginRight: 10,
     height: 30,
     width: 30,
