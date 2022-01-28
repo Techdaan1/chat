@@ -15,10 +15,17 @@ export default class Chat extends React.Component {
     super();
     this.state = {
       messages: [],
+      user: {
+        _id: "",
+        name: "",
+        avatar: "",
+      },
     };
   }
 
   componentDidMount() {
+    let name = this.props.route.params.name;
+    this.props.navigation.setOptions({ title: name });
     this.setState({
       messages: [
         {
@@ -41,14 +48,13 @@ export default class Chat extends React.Component {
     });
   }
 
-  //Makes sure the messages are being passed in the chat field
+  // Make sure messages are sent
   onSend(messages = []) {
     this.setState((previousState) => ({
       messages: GiftedChat.append(previousState.messages, messages),
     }));
   }
-
-  //Changes the colour of the chat bubble
+  // handles the background color of the chat bubbles
   renderBubble(props) {
     return (
       <Bubble
@@ -66,8 +72,7 @@ export default class Chat extends React.Component {
   }
 
   render() {
-    let name = this.props.route.params.name;
-    this.props.navigation.setOptions({ title: name });
+    // Set the title of the page
     return (
       <View style={styles.container}>
         <GiftedChat
@@ -76,9 +81,10 @@ export default class Chat extends React.Component {
           onSend={(messages) => this.onSend(messages)}
           user={{
             _id: 1,
+            name: this.state.name,
           }}
         />
-        //Makes sure keyboard is not hidden begin input field on Android
+
         {Platform.OS === "android" ? (
           <KeyboardAvoidingView behavior="height" />
         ) : null}
