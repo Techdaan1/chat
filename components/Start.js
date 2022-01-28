@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
 
   colorText: {
     fontSize: 16,
-    color: "darkred",
+    color: "black",
     fontWeight: "100",
     textAlign: "center",
   },
