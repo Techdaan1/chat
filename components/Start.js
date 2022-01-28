@@ -1,6 +1,7 @@
 import React from "react";
 import {
   ImageBackground,
+  Image,
   StyleSheet,
   Text,
   View,
@@ -9,6 +10,7 @@ import {
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import backgroundImg from "../assets/bg-img.png";
+import userIcon from "../assets/user-icon.png";
 
 export default class Start extends React.Component {
   constructor(props) {
@@ -42,11 +44,12 @@ export default class Start extends React.Component {
           </View>
           <View style={styles.box}>
             <View style={styles.inputBox}>
+              <Image source={userIcon} style={styles.userIcon}></Image>
               <TextInput
                 style={styles.inputText}
                 onChangeText={(text) => this.setState({ name: text })}
                 value={this.state.name}
-                placeholder="Type your name here..."
+                placeholder="Your name..."
               />
             </View>
             <View style={styles.colorBox}>
@@ -129,16 +132,28 @@ const styles = StyleSheet.create({
     color: "blue",
   },
 
+  userIcon: {
+    marginTop: 7,
+    marginLeft: 10,
+    marginRight: 10,
+    height: 30,
+    width: 30,
+    resizeMode: "stretch",
+    opacity: 0.5,
+    flexDirection: "column",
+  },
+
   inputText: {
+    flexDirection: "column",
     fontSize: 16,
     fontWeight: "300",
     color: "#757083",
     opacity: 0.5,
     textAlign: "center",
-    paddingTop: 8,
   },
 
   inputBox: {
+    flexDirection: "row",
     marginTop: 30,
     marginBottom: 20,
     width: "80%",
