@@ -4,8 +4,8 @@ import { View, Platform, KeyboardAvoidingView, StyleSheet } from "react-native";
 
 import "firebase/firestore";
 
-// const firebase = require("firebase");
-// require("firebase/firestore");
+const firebase = require("firebase");
+require("firebase/firestore");
 
 //web apps Firebase configuration
 const firebaseConfig = {
