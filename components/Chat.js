@@ -1,55 +1,113 @@
 import React from "react";
 import { GiftedChat, Bubble } from "react-native-gifted-chat";
-import {
-  View,
-  Platform,
-  KeyboardAvoidingView,
-  Text,
-  Button,
-  TextInput,
-  StyleSheet,
-} from "react-native";
+import { View, Platform, KeyboardAvoidingView, StyleSheet } from "react-native";
+
+import "firebase/firestore";
 
 // const firebase = require("firebase");
 // require("firebase/firestore");
 
-export default class Chat extends React.Component {
+//web apps Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyCQne6jh0BRbyAlkgNRKYbzc1ddv4_T-F0",
+  authDomain: "chat-3e533.firebaseapp.com",
+  projectId: "chat-3e533",
+  storageBucket: "chat-3e533.appspot.com",
+  messagingSenderId: "410933622357",
+  appId: "1:410933622357:web:37bf35c42cd74b30cc46dc",
+  measurementId: "G-MBBL2ZCNRG",
+};
+
+export default class Chat extends Component {
   constructor() {
     super();
     this.state = {
       messages: [],
+      uid: 0,
       user: {
         _id: "",
         name: "",
         avatar: "",
       },
     };
+
+    // initializing firebase
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+
+    // create reference to the Firestore messages collection
+    this.referenceChatMessages = firebase.firestore().collection("messages");
+    this.refMsgsUser = null;
   }
 
   componentDidMount() {
-    //Set name to name selected on start page
+    //set name to name selected on start page
     let name = this.props.route.params.name;
     this.props.navigation.setOptions({ title: name });
-    this.setState({
-      messages: [
-        {
-          _id: 1,
-          text: "Hello developer",
-          createdAt: new Date(),
-          user: {
-            _id: 2,
-            name: "React Native",
-            avatar: "https://placeimg.com/140/140/any",
-          },
+
+    //listen to authentication events, sign in anonymously
+    this.authUnsubscribe = firebase.auth().onAuthStateChanged((user) => {
+      if (!user) {
+        firebase.auth().signInAnonymously();
+      }
+      //update user state with currently active user data
+      this.setState({
+        uid: user.uid,
+        messages: [],
+        user: {
+          _id: user.uid,
+          name: name,
+          avatar: "https://placeimg.com/140/140/any",
         },
-        {
-          _id: 2,
-          text: "This is a system message",
-          createdAt: new Date(),
-          system: true,
-        },
-      ],
+      });
+      // listens for updates in the collection
+      this.unsubscribe = this.referenceChatMessages
+        .orderBy("createdAt", "desc")
+        .onSnapshot(this.onCollectionUpdate);
     });
+    this.refMsgsUser = firebase
+      .firestore()
+      .collection("messages")
+      .where("uid", "==", this.state.uid);
+  }
+
+  // add a new message to the collection
+  addMessage() {
+    const message = this.state.messages[0];
+    this.referenceChatMessages.add({
+      _id: message._id,
+      text: message.text || "",
+      createdAt: message.createdAt,
+      user: this.state.user,
+    });
+  }
+
+  onCollectionUpdate = (querySnapshot) => {
+    const messages = [];
+    // go through each document
+    querySnapshot.forEach((doc) => {
+      // get the QueryDocumentSnapshot's data
+      var data = doc.data();
+      messages.push({
+        _id: data._id,
+        text: data.text,
+        createdAt: data.createdAt.toDate(),
+        user: {
+          _id: data.user._id,
+          name: data.user.name,
+          avatar: data.user.avatar,
+        },
+      });
+    });
+    this.setState({
+      messages: messages,
+    });
+  };
+
+  // stop listening to authentication and collection changes
+  componentWillUnmount() {
+    this.unsubscribe();
   }
 
   // Make sure messages are sent
@@ -58,6 +116,7 @@ export default class Chat extends React.Component {
       messages: GiftedChat.append(previousState.messages, messages),
     }));
   }
+
   // handles the background color of the chat bubbles
   renderBubble(props) {
     return (
