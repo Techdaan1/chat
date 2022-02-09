@@ -1,8 +1,16 @@
 import React from "react";
-import { GiftedChat, Bubble } from "react-native-gifted-chat";
+import {
+  GiftedChat,
+  Bubble,
+  renderInputToolbar,
+} from "react-native-gifted-chat";
 import { View, Platform, KeyboardAvoidingView, StyleSheet } from "react-native";
 
 import "firebase/firestore";
+import AsyncStorage from "@react-native-community/async-storage";
+import NetInfo, {
+  NetInfoCellularGeneration,
+} from "@react-native-community/netinfo";
 
 const firebase = require("firebase");
 require("firebase/firestore");
@@ -41,10 +49,53 @@ export default class Chat extends Component {
     this.refMsgsUser = null;
   }
 
+  async saveMessages() {
+    try {
+      await AsyncStorage.setItem(
+        "messages",
+        JSON.stringify(this.state.messages)
+      );
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  async getMessages() {
+    let messages = "";
+    try {
+      messages = (await AsyncStorage.getItem("messages")) || [];
+      this.setState({
+        messages: JSON.parse(messages),
+      });
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  async deleteMessages() {
+    try {
+      await AsyncStorage.removeItem("messages");
+      this.setState({
+        messages: [],
+      });
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
   componentDidMount() {
     //set name to name selected on start page
     let name = this.props.route.params.name;
     this.props.navigation.setOptions({ title: name });
+
+    //Check if the user is off- or online
+    NetInfo.fetch().then((connection) => {
+      if (connection.isConnected) {
+        console.log("online");
+      } else {
+        console.log("offline");
+      }
+    });
 
     //listen to authentication events, sign in anonymously
     this.authUnsubscribe = firebase.auth().onAuthStateChanged((user) => {
@@ -81,6 +132,7 @@ export default class Chat extends Component {
       createdAt: message.createdAt,
       user: this.state.user,
     });
+    this.getMessages();
   }
 
   onCollectionUpdate = (querySnapshot) => {
@@ -112,9 +164,14 @@ export default class Chat extends Component {
 
   // Make sure messages are sent
   onSend(messages = []) {
-    this.setState((previousState) => ({
-      messages: GiftedChat.append(previousState.messages, messages),
-    }));
+    this.setState(
+      (previousState) => ({
+        messages: GiftedChat.append(previousState.messages, messages),
+      }),
+      () => {
+        this.saveMessages();
+      }
+    );
   }
 
   // handles the background color of the chat bubbles
@@ -132,6 +189,13 @@ export default class Chat extends Component {
         }}
       />
     );
+  }
+
+  renderInputToolbar(props) {
+    if (this.state.isConnected == false) {
+    } else {
+      return <InputToolbar {...props} />;
+    }
   }
 
   render() {
