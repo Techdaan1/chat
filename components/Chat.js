@@ -12,8 +12,8 @@ import NetInfo, {
   NetInfoCellularGeneration,
 } from "@react-native-community/netinfo";
 
-const firebase = require("firebase");
-require("firebase/firestore");
+//const firebase = require("firebase");
+//require("firebase/firestore");
 
 //web apps Firebase configuration
 const firebaseConfig = {
