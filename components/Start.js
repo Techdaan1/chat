@@ -1,3 +1,4 @@
+import "firebase/firestore";
 import React from "react";
 import {
   ImageBackground,
