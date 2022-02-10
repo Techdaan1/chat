@@ -1,16 +1,9 @@
 import React, { Component } from "react";
-import {
-  GiftedChat,
-  Bubble,
-  renderInputToolbar,
-} from "react-native-gifted-chat";
+import { GiftedChat, Bubble, InputToolbar } from "react-native-gifted-chat";
 import { View, Platform, KeyboardAvoidingView, StyleSheet } from "react-native";
-
 import "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import NetInfo, {
-  NetInfoCellularGeneration,
-} from "@react-native-community/netinfo";
+import NetInfo from "@react-native-community/netinfo";
 
 //const firebase = require("firebase");
 //require("firebase/firestore");
