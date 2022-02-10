@@ -80,42 +80,53 @@ export default class Chat extends Component {
 
   componentDidMount() {
     //set name to name selected on start page
-    let name = this.props.route.params.name;
+    let { name } = this.props.route.params;
+    // Adds the name to top of screen
     this.props.navigation.setOptions({ title: name });
 
     //Check if the user is off- or online
     NetInfo.fetch().then((connection) => {
+      //actions when user is online
       if (connection.isConnected) {
+        this.setState({ isConnected: true });
         console.log("online");
-      } else {
-        console.log("offline");
-      }
-    });
 
-    //listen to authentication events, sign in anonymously
-    this.authUnsubscribe = firebase.auth().onAuthStateChanged((user) => {
-      if (!user) {
-        firebase.auth().signInAnonymously();
+        //listen to authentication events, sign in anonymously
+        this.authUnsubscribe = firebase
+          .auth()
+          .onAuthStateChanged(async (user) => {
+            if (!user) {
+              await firebase.auth().signInAnonymously();
+            }
+            //update user state with currently active user data
+            this.setState({
+              uid: user.uid,
+              messages: [],
+              user: {
+                _id: user.uid,
+                name: name,
+                avatar: "https://placeimg.com/140/140/any",
+              },
+            });
+            // listens for updates in the collection
+            this.unsubscribe = this.referenceChatMessages
+              .orderBy("createdAt", "desc")
+              .onSnapshot(this.onCollectionUpdate);
+            //referencing messages of current user
+            this.refMsgsUser = firebase
+              .firestore()
+              .collection("messages")
+              .where("uid", "==", this.state.uid);
+          });
+        //save messages when online
+        this.saveMessages();
+      } else {
+        this.setState({ isConnected: false });
+        console.log("offline");
+        //retrieve chat from asyncstorage
+        this.getMessages();
       }
-      //update user state with currently active user data
-      this.setState({
-        uid: user.uid,
-        messages: [],
-        user: {
-          _id: user.uid,
-          name: name,
-          avatar: "https://placeimg.com/140/140/any",
-        },
-      });
-      // listens for updates in the collection
-      this.unsubscribe = this.referenceChatMessages
-        .orderBy("createdAt", "desc")
-        .onSnapshot(this.onCollectionUpdate);
     });
-    this.refMsgsUser = firebase
-      .firestore()
-      .collection("messages")
-      .where("uid", "==", this.state.uid);
   }
 
   // add a new message to the collection
