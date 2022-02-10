@@ -7,7 +7,7 @@ import {
 import { View, Platform, KeyboardAvoidingView, StyleSheet } from "react-native";
 
 import "firebase/firestore";
-import AsyncStorage from "@react-native-community/async-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import NetInfo, {
   NetInfoCellularGeneration,
 } from "@react-native-community/netinfo";
