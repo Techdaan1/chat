@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import {
   GiftedChat,
   Bubble,
@@ -219,6 +219,7 @@ export default class Chat extends Component {
                 _id: 1,
                 name: this.state.name,
               }}
+              renderActions={this.renderCustomActions}
             />
 
             {Platform.OS === "android" ? (
