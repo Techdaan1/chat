@@ -64,3 +64,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 });
+
+CustomActions.conextTypes = {
+  actionSheet: PropTypes.func,
+};
