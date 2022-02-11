@@ -32,16 +32,48 @@ export default class CustomActions extends React.Component {
     );
   };
 
+  //store uploaded image to firebase as blobs
+  uploadImage = async (uri) => {
+    const blob = await new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.onload = function () {
+        resolve(xhr.response);
+      };
+      xhr.onerror = function (e) {
+        console.log(e);
+        reject(new TypeError("Network request failed"));
+      };
+      xhr.responseType = "blob";
+      xhr.open("GET", uri, true);
+      xhr.send(null);
+    });
+
+    const imageNameBefore = uri.split("/");
+    const imageName = imageNameBefore[imageNameBefore.length - 1];
+
+    const ref = firebase.storage().ref().child(`images/${imageName}`);
+
+    const snapshot = await ref.put(blob);
+
+    blob.close();
+
+    return await snapshot.ref.getDownloadURL();
+  };
+
   render() {
     return (
       <TouchableOpacity style={[styles.container]} onPress={this.onActionPress}>
         <View style={[styles.wrapper, this.props.wrapperStyle]}>
-          <Text style={[styles.iconText, this.props.iconTextStyle]}></Text>
+          <Text style={[styles.iconText, this.props.iconTextStyle]}>+</Text>
         </View>
       </TouchableOpacity>
     );
   }
 }
+
+CustomActions.contextTypes = {
+  actionSheet: PropTypes.func,
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -64,7 +96,3 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 });
-
-CustomActions.conextTypes = {
-  actionSheet: PropTypes.func,
-};
