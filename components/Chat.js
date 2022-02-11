@@ -32,6 +32,7 @@ export default class Chat extends Component {
         name: "",
         avatar: "",
       },
+      isConnected: false,
     };
 
     // initializing firebase
@@ -86,18 +87,22 @@ export default class Chat extends Component {
 
     //Check if the user is off- or online
     NetInfo.fetch().then((connection) => {
-      //actions when user is online
       if (connection.isConnected) {
         this.setState({ isConnected: true });
         console.log("online");
+        // listens for updates in the collection
+        this.unsubscribe = this.referenceChatMessages
+          .orderBy("createdAt", "desc")
+          .onSnapshot(this.onCollectionUpdate);
 
         //listen to authentication events, sign in anonymously
         this.authUnsubscribe = firebase
           .auth()
           .onAuthStateChanged(async (user) => {
             if (!user) {
-              await firebase.auth().signInAnonymously();
+              return await firebase.auth().signInAnonymously();
             }
+
             //update user state with currently active user data
             this.setState({
               uid: user.uid,
@@ -108,10 +113,7 @@ export default class Chat extends Component {
                 avatar: "https://placeimg.com/140/140/any",
               },
             });
-            // listens for updates in the collection
-            this.unsubscribe = this.referenceChatMessages
-              .orderBy("createdAt", "desc")
-              .onSnapshot(this.onCollectionUpdate);
+
             //referencing messages of current user
             this.refMsgsUser = firebase
               .firestore()
@@ -121,6 +123,7 @@ export default class Chat extends Component {
         //save messages when online
         this.saveMessages();
       } else {
+        // the user is offline
         this.setState({ isConnected: false });
         console.log("offline");
         //retrieve chat from asyncstorage
@@ -146,7 +149,7 @@ export default class Chat extends Component {
     // go through each document
     querySnapshot.forEach((doc) => {
       // get the QueryDocumentSnapshot's data
-      var data = doc.data();
+      let data = doc.data();
       messages.push({
         _id: data._id,
         text: data.text,
