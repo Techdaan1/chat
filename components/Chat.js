@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
 
   giftedChat: {
     flex: 1,
-    width: "88%",
+    width: "100%",
     paddingBottom: 10,
     justifyContent: "center",
     borderRadius: 5,
