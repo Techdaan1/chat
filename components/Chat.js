@@ -240,8 +240,9 @@ export default class Chat extends Component {
               messages={this.state.messages}
               onSend={(messages) => this.onSend(messages)}
               user={{
-                _id: 1,
+                _id: this.state.user._id,
                 name: this.state.name,
+                avatar: this.state.user.avatar,
               }}
               renderActions={this.renderCustomActions}
               renderCustomView={this.renderCustomView}
