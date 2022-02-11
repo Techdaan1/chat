@@ -6,6 +6,7 @@ import * as firebase from "firebase";
 import "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NetInfo from "@react-native-community/netinfo";
+import CustomActions from "./CustomActions";
 
 //const firebase = require("firebase");
 //require("firebase/firestore");
@@ -207,6 +208,8 @@ export default class Chat extends Component {
     }
   }
 
+  renderCustomActions = (props) => <CustomActions {...props} />;
+
   renderCustomView(props) {
     const { currentMessage } = props;
     if (currentMessage.location) {
@@ -230,31 +233,24 @@ export default class Chat extends Component {
     let bgColor = this.props.route.params.bgColor;
     return (
       <View style={styles.container}>
-        <View
-          style={{
-            backgroundColor: bgColor,
-            width: "100%",
-            height: "100%",
-          }}
-        >
-          <View style={styles.giftedChat}>
-            <GiftedChat
-              renderBubble={this.renderBubble.bind(this)}
-              messages={this.state.messages}
-              onSend={(messages) => this.onSend(messages)}
-              user={{
-                _id: this.state.user._id,
-                name: this.state.name,
-                avatar: this.state.user.avatar,
-              }}
-              renderActions={this.renderCustomActions}
-              renderCustomView={this.renderCustomView}
-            />
+        <View style={styles.giftedChat}>
+          <GiftedChat
+            messages={this.state.messages}
+            onSend={(messages) => this.onSend(messages)}
+            renderBubble={this.renderBubble.bind(this)}
+            renderActions={this.renderCustomActions}
+            renderInpuToolbar={this.renderInputToolbar.bind(this)}
+            renderCustomView={this.renderCustomView}
+            user={{
+              _id: this.state.user._id,
+              name: this.state.name,
+              avatar: this.state.user.avatar,
+            }}
+          />
 
-            {Platform.OS === "android" ? (
-              <KeyboardAvoidingView behavior="height" />
-            ) : null}
-          </View>
+          {Platform.OS === "android" ? (
+            <KeyboardAvoidingView behavior="height" />
+          ) : null}
         </View>
       </View>
     );
