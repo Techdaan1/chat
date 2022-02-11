@@ -7,6 +7,7 @@ import "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NetInfo from "@react-native-community/netinfo";
 import CustomActions from "./CustomActions";
+import MapView from "react-native-maps";
 
 //const firebase = require("firebase");
 //require("firebase/firestore");
@@ -34,6 +35,8 @@ export default class Chat extends Component {
         avatar: "",
       },
       isConnected: false,
+      image: null,
+      location: null,
     };
 
     // initializing firebase
@@ -141,8 +144,9 @@ export default class Chat extends Component {
       text: message.text || "",
       createdAt: message.createdAt,
       user: this.state.user,
+      image: message.image || "",
+      location: message.location || null,
     });
-    this.getMessages();
   }
 
   onCollectionUpdate = (querySnapshot) => {
@@ -150,7 +154,7 @@ export default class Chat extends Component {
     // go through each document
     querySnapshot.forEach((doc) => {
       // get the QueryDocumentSnapshot's data
-      let data = doc.data();
+      var data = doc.data();
       messages.push({
         _id: data._id,
         text: data.text,
@@ -160,16 +164,24 @@ export default class Chat extends Component {
           name: data.user.name,
           avatar: data.user.avatar,
         },
+        image: data.image || null,
+        location: data.location || null,
       });
     });
     this.setState({
       messages: messages,
     });
+    this.saveMessages();
   };
 
   // stop listening to authentication and collection changes
   componentWillUnmount() {
-    this.unsubscribe();
+    if (this.state.isConnected) {
+      // stop listening to authentication
+      this.authUnsubscribe();
+      // stop listening for changes
+      this.unsubscribe();
+    }
   }
 
   // Make sure messages are sent
@@ -179,6 +191,8 @@ export default class Chat extends Component {
         messages: GiftedChat.append(previousState.messages, messages),
       }),
       () => {
+        //this.saveMessages();
+        this.addMessage();
         this.saveMessages();
       }
     );
