@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import {
   GiftedChat,
   Bubble,
@@ -29,7 +29,7 @@ const firebaseConfig = {
   measurementId: "G-MBBL2ZCNRG",
 };
 
-export default class Chat extends Component {
+export default class Chat extends React.Component {
   constructor() {
     super();
     this.state = {
