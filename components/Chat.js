@@ -1,5 +1,11 @@
 import React, { Component } from "react";
-import { GiftedChat, Bubble, InputToolbar } from "react-native-gifted-chat";
+import {
+  GiftedChat,
+  Bubble,
+  InputToolbar,
+  SystemMessage,
+  Day,
+} from "react-native-gifted-chat";
 import { View, Platform, KeyboardAvoidingView, StyleSheet } from "react-native";
 
 import * as firebase from "firebase";
@@ -137,7 +143,7 @@ export default class Chat extends Component {
   }
 
   // add a new message to the collection
-  addMessage() {
+  addMessages() {
     const message = this.state.messages[0];
     this.referenceChatMessages.add({
       _id: message._id,
@@ -191,8 +197,7 @@ export default class Chat extends Component {
         messages: GiftedChat.append(previousState.messages, messages),
       }),
       () => {
-        //this.saveMessages();
-        this.addMessage();
+        this.addMessages();
         this.saveMessages();
       }
     );
@@ -242,29 +247,63 @@ export default class Chat extends Component {
     return null;
   }
 
+  // customizes system messages
+  renderSystemMessage(props) {
+    return (
+      <SystemMessage
+        {...props}
+        textStyle={{
+          color: "#57402f",
+        }}
+      />
+    );
+  }
+
+  // customizes day messages
+  renderDay(props) {
+    return (
+      <Day
+        {...props}
+        textStyle={{
+          color: "#57402f",
+        }}
+      />
+    );
+  }
+
   render() {
     //Set bgcolor to color selected on start page
     let bgColor = this.props.route.params.bgColor;
     return (
       <View style={styles.container}>
-        <View style={styles.giftedChat}>
-          <GiftedChat
-            messages={this.state.messages}
-            onSend={(messages) => this.onSend(messages)}
-            renderBubble={this.renderBubble.bind(this)}
-            renderActions={this.renderCustomActions}
-            renderInpuToolbar={this.renderInputToolbar.bind(this)}
-            renderCustomView={this.renderCustomView}
-            user={{
-              _id: this.state.user._id,
-              name: this.state.name,
-              avatar: this.state.user.avatar,
-            }}
-          />
+        <View
+          style={{
+            backgroundColor: bgColor,
+            width: "100%",
+            height: "100%",
+          }}
+        >
+          <View style={styles.giftedChat}>
+            <GiftedChat
+              messages={this.state.messages}
+              onSend={(messages) => this.onSend(messages)}
+              renderBubble={this.renderBubble.bind(this)}
+              renderSystemMessage={this.renderSystemMessage}
+              renderDay={this.renderDay}
+              renderActions={this.renderCustomActions}
+              renderInputToolbar={this.renderInputToolbar.bind(this)}
+              renderCustomView={this.renderCustomView}
+              user={{
+                _id: this.state.user._id,
+                name: this.state.name,
+                avatar: this.state.user.avatar,
+              }}
+            />
 
-          {Platform.OS === "android" ? (
-            <KeyboardAvoidingView behavior="height" />
-          ) : null}
+            {Platform.OS === "android" ? (
+              <KeyboardAvoidingView behavior="height" />
+            ) : null}
+          </View>
         </View>
       </View>
     );
