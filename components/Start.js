@@ -1,5 +1,3 @@
-import * as firebase from "firebase";
-import "firebase/firestore";
 import React from "react";
 import {
   ImageBackground,
@@ -8,12 +6,15 @@ import {
   Text,
   View,
   TextInput,
+  Platform,
   Pressable,
   KeyboardAvoidingView,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import backgroundImg from "../assets/bg-img.png";
 import userIcon from "../assets/user-icon.png";
+
+import "firebase/firestore";
 
 export default class Start extends React.Component {
   constructor(props) {
