@@ -102,6 +102,7 @@ export default class CustomActions extends React.Component {
     return await snapshot.ref.getDownloadURL();
   };
 
+  //function that handles communication features
   onActionPress = () => {
     const options = [
       "Choose From Library",
@@ -119,13 +120,13 @@ export default class CustomActions extends React.Component {
         switch (buttonIndex) {
           case 0:
             console.log("user wants to pick an image");
-            return;
+            return this.pickImage();
           case 1:
             console.log("user wants to take a photo");
-            return;
+            return this.TakePhoto();
           case 2:
             console.log("user wants to get their location");
-          default:
+            return this.getLocation();
         }
       }
     );
