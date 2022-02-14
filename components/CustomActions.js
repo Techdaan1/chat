@@ -9,7 +9,7 @@ import "firebase/firestore";
 export default class CustomActions extends React.Component {
   //pick image from phone
   pickImage = async () => {
-    ///permission to access media library
+    //permission to access media library
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     try {
       if (status === "granted") {
