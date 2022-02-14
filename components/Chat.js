@@ -7,13 +7,13 @@ import {
   Day,
 } from "react-native-gifted-chat";
 import { View, Platform, KeyboardAvoidingView, StyleSheet } from "react-native";
-
-import * as firebase from "firebase";
-import "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NetInfo from "@react-native-community/netinfo";
 import CustomActions from "./CustomActions";
 import MapView from "react-native-maps";
+
+import * as firebase from "firebase";
+import "firebase/firestore";
 
 //const firebase = require("firebase");
 //require("firebase/firestore");
