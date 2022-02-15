@@ -5,6 +5,7 @@ import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
 import * as firebase from "firebase";
 import "firebase/firestore";
+import * as Permissions from "expo-permissions";
 
 export default class CustomActions extends React.Component {
   //pick image from phone
